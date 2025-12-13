@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kim Namhoon | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b', // Dark Red
+                            900: '#7f1d1d',
+                            950: '#450a0a', // Very Dark Red background
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        body {
+            background-color: #0f0505;
+            /* Custom very dark background mixing black and red hint */
+            color: #e5e5e5;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a0b0b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #7f1d1d;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #991b1b;
+        }
+
+        .glass-card {
+            background: rgba(30, 10, 10, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(127, 29, 29, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        }
+
+        /* LoL Style Skin Selector - Large Scale */
+        .skin-gallery-wrapper {
+            width: 100%;
+            height: 80vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .skin-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            /* 16px */
+            padding: 0 50%;
+            /* Allow first/last items to reach center */
+            box-sizing: border-box;
+
+            perspective: 1000px;
+            height: 100%;
+            width: max-content;
+            /* Allow growing */
+
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .skin-card {
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            flex-shrink: 0;
+            /* Prevent squishing */
+
+            /* Dynamic Dimensions based on Viewport Height */
+            height: 50vh;
+            width: auto;
+            /* Maintain aspect ratio */
+            aspect-ratio: 919/1173;
+
+            filter: brightness(0.4) blur(2px) grayscale(80%);
+            opacity: 0.6;
+            transform: scale(0.9);
+            z-index: 10;
+        }
+
+        .skin-card.active {
+            /* Active Dimensions - Much Larger */
+            height: 70vh;
+            /* Dramatic height */
+            width: auto;
+
+            filter: brightness(1.2) blur(0) grayscale(0%);
+            opacity: 1;
+            transform: scale(1);
+            z-index: 50;
+            border-color: #ef4444;
+            /* Brand Red */
+            box-shadow: 0 0 50px rgba(220, 38, 38, 0.5);
+        }
+
+        .skin-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Navigation Arrows */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 60;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(239, 68, 68, 0.8);
+            /* Brand Red */
+            border-color: #ef4444;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        #prevBtn {
+            left: 1rem;
+        }
+
+        #nextBtn {
+            right: 1rem;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-brand-900 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 start-0 border-b border-brand-900/50 bg-black/50 backdrop-blur-md">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <span class="self-center text-2xl font-bold whitespace-nowrap text-brand-500">NH</span>
+            </a>
+            <div class="hidden w-full md:block md:w-auto">
+                <ul
+                    class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-brand-800 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
+                    <li><a href="#about"
+                            class="block py-2 px-3 text-gray-300 hover:text-brand-500 transition-colors">About</a></li>
+                    <li><a href="#skills"
+                            class="block py-2 px-3 text-gray-300 hover:text-brand-500 transition-colors">Skills</a></li>
+                    <li><a href="#projects"
+                            class="block py-2 px-3 text-gray-300 hover:text-brand-500 transition-colors">Projects</a>
+                    </li>
+                    <li><a href="#contact"
+                            class="block py-2 px-3 text-gray-300 hover:text-brand-500 transition-colors">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="about"
+        class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-900/20 rounded-full blur-3xl -z-10 animate-pulse">
+        </div>
+        <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-brand-700/10 rounded-full blur-3xl -z-10"></div>
+
+        <h1
+            class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white animate-fade-in-up">
+            안녕하세요, <span class="text-brand-500 text-glow">김남훈</span>입니다.
+        </h1>
+
+        <!-- Slogan (Blur Removed) -->
+        <div class="relative mt-6 p-4 cursor-default inline-block">
+            <p class="text-xl font-normal text-white lg:text-2xl sm:px-16 lg:px-48">
+                효율과 안정성의 균형잡인 운영
+            </p>
+        </div>
+
+        <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 mt-8">
+            <a href="#projects"
+                class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-brand-700 hover:bg-brand-800 focus:ring-4 focus:ring-brand-900 transition-all">
+                View Projects
+                <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9" />
+                </svg>
+            </a>
+            <a href="#contact"
+                class="inline-flex justify-center items-center py-3 px-5 sm:ms-4 text-base font-medium text-center text-gray-300 rounded-lg border border-brand-800 hover:bg-brand-900/50 focus:ring-4 focus:ring-brand-900 transition-all">
+                Contact Me
+            </a>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="skills" class="py-24 px-4 bg-black/20">
+        <div class="max-w-screen-xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12 text-white"><span
+                    class="border-b-4 border-brand-600 pb-2">Tech Stacks</span></h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Languages -->
+                <div class="glass-card p-8 rounded-xl hover:translate-y-[-5px] transition-transform duration-300">
+                    <div class="w-12 h-12 bg-brand-900/50 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-brand-100">Languages</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="bg-brand-900/40 text-brand-200 text-sm font-medium px-3 py-1 rounded-full border border-brand-800">C</span>
+                        <span
+                            class="bg-brand-900/40 text-brand-200 text-sm font-medium px-3 py-1 rounded-full border border-brand-800">Python</span>
+                    </div>
+                </div>
+
+                <!-- Frameworks -->
+                <div class="glass-card p-8 rounded-xl hover:translate-y-[-5px] transition-transform duration-300">
+                    <div class="w-12 h-12 bg-brand-900/50 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-brand-100">Frameworks</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="bg-brand-900/40 text-brand-200 text-sm font-medium px-3 py-1 rounded-full border border-brand-800">Flask</span>
+                    </div>
+                </div>
+
+                <!-- Tools -->
+                <div class="glass-card p-8 rounded-xl hover:translate-y-[-5px] transition-transform duration-300">
+                    <div class="w-12 h-12 bg-brand-900/50 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-brand-100">Tools</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="bg-brand-900/40 text-brand-200 text-sm font-medium px-3 py-1 rounded-full border border-brand-800">Git</span>
+                        <span
+                            class="bg-brand-900/40 text-brand-200 text-sm font-medium px-3 py-1 rounded-full border border-brand-800">AWS</span>
+                        <span
+                            class="bg-brand-900/40 text-brand-200 text-sm font-medium px-3 py-1 rounded-full border border-brand-800">Figma</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24 px-4">
+        <div class="max-w-screen-xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-16 text-white"><span
+                    class="border-b-4 border-brand-600 pb-2">Killer Projects</span></h2>
+
+            <!-- Project 1: Youthnews -->
+            <div class="glass-card rounded-2xl p-8 mb-24 lg:flex lg:gap-12">
+                <div class="lg:w-1/3 mb-8 lg:mb-0 border-r border-brand-800/30 pr-0 lg:pr-8">
+                    <h3 class="text-3xl font-bold text-brand-500 mb-2">Youthnews 뉴스 요약</h3>
+                    <p class="text-gray-400 mb-4">백엔드 설계 및 크롤링 구현 | 2025.03 - 2025.06</p>
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-brand-200 mb-2">Tech Decision</h4>
+                        <div class="bg-brand-950/50 p-4 rounded-lg border border-brand-900">
+                            <p class="text-sm text-gray-300">AWS 사용: 24시간 실시간 크롤링 및 안정적 서비스 제공을 위한 인프라 구축</p>
+                        </div>
+                    </div>
+                    <a href="https://github.com/nhn0810/Youthnews" target="_blank"
+                        class="text-brand-400 hover:text-brand-300 flex items-center font-medium">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        View on GitHub
+                    </a>
+                </div>
+
+                <div class="lg:w-2/3">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Stat 1 -->
+                        <div
+                            class="bg-gray-900/40 p-6 rounded-xl border border-brand-900/30 text-center hover:bg-gray-900/60 transition-colors">
+                            <div class="text-4xl font-bold text-brand-500 mb-2">Problem</div>
+                            <p class="text-sm text-gray-300">출판사별 상이한 링크 구조로 인한 코드 비대화 및 관리 난항</p>
+                        </div>
+                        <!-- Stat 2 -->
+                        <div
+                            class="bg-gray-900/40 p-6 rounded-xl border border-brand-900/30 text-center hover:bg-gray-900/60 transition-colors">
+                            <div class="text-4xl font-bold text-brand-500 mb-2">Solution</div>
+                            <p class="text-sm text-gray-300">네이버 뉴스 플랫폼을 활용한 링크 구조 통합 및 표준화</p>
+                        </div>
+                        <!-- Stat 3 -->
+                        <div
+                            class="bg-brand-900/20 p-6 rounded-xl border border-brand-500/50 text-center hover:bg-brand-900/30 transition-colors">
+                            <div class="text-4xl font-extrabold text-white mb-2">Result</div>
+                            <ul class="text-sm text-gray-200 space-y-1">
+                                <li>코드 길이 <span class="text-brand-400 font-bold">95%</span> 감소</li>
+                                <li>수행 시간 <span class="text-brand-400 font-bold">70%</span> 단축</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2: Restaurant Reservation -->
+            <div class="glass-card rounded-2xl p-8">
+                <div class="mb-8 border-b border-brand-800/30 pb-8">
+                    <h3 class="text-3xl font-bold text-brand-500 mb-2">식당 좌석 예약 시스템</h3>
+                    <p class="text-gray-400 mb-4">프론트엔드, 드래그 앤 드롭 구현 | 2025.09 - 2025.11</p>
+
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <span class="text-brand-400 font-semibold block">Problem</span>
+                            <span class="text-sm text-gray-300">Oracle APEX의 기능 제한으로 드래그 앤 드롭 구현 불가</span>
+                        </div>
+                        <div>
+                            <span class="text-brand-400 font-semibold block">Solution</span>
+                            <span class="text-sm text-gray-300">Region 내부 HTML/JS 커스텀 구현으로 한계 극복</span>
+                        </div>
+                        <div class="p-4 bg-brand-950/50 rounded-lg border-l-4 border-brand-500">
+                            <span class="text-white font-bold block">Result</span>
+                            <span class="text-sm text-gray-200">성공적인 기능 구현 및 기한 내 프로젝트 완료</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative w-full">
+                    <!-- Dynamic Label -->
+                    <h4 id="gallery-label"
+                        class="text-center text-3xl font-bold text-white mb-6 drop-shadow-lg transition-all duration-300">
+                        <!-- Text injected by JS -->
+                    </h4>
+
+                    <p class="text-center text-xs text-brand-400 mt-2 mb-4 animate-pulse">👇 Select a card to view</p>
+
+                    <!-- Navigation Buttons (outside wrapper to stay fixed) -->
+                    <button id="prevBtn" class="nav-btn" aria-label="Previous Image">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button id="nextBtn" class="nav-btn" aria-label="Next Image">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+
+                    <div class="skin-gallery-wrapper">
+                        <div class="skin-container" id="skinGallery">
+                            <!-- Cards will be populated and controlled by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-4 bg-black/40">
+        <div class="max-w-screen-md mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-8 text-white">Contact Me</h2>
+            <div class="glass-card p-10 rounded-2xl">
+                <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+                    <a href="mailto:Deeproottree@naver.com" class="flex flex-col items-center group">
+                        <div
+                            class="w-16 h-16 bg-brand-900 rounded-full flex items-center justify-center mb-3 group-hover:bg-brand-700 transition-colors">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <span class="text-lg font-medium text-gray-300 group-hover:text-brand-400">Email Me</span>
+                        <span class="text-sm text-gray-500">Deeproottree@naver.com</span>
+                    </a>
+
+                    <div class="hidden md:block w-px h-24 bg-brand-900/50"></div>
+
+                    <a href="https://github.com/nhn0810" target="_blank" class="flex flex-col items-center group">
+                        <div
+                            class="w-16 h-16 bg-brand-900 rounded-full flex items-center justify-center mb-3 group-hover:bg-brand-700 transition-colors">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </div>
+                        <span class="text-lg font-medium text-gray-300 group-hover:text-brand-400">GitHub</span>
+                        <span class="text-sm text-gray-500">@nhn0810</span>
+                    </a>
+                </div>
+            </div>
+            <p class="mt-8 text-gray-600 text-sm">&copy; 2025 Kim Namhoon. All rights reserved.</p>
+        </div>
+    </section>
+
+    <script>
+        // LoL Style Gallery Logic
+        const images = [
+            'seat_1.png',
+            'seat_2.png',
+            'seatedit.png',
+            'View_1.png',
+            'View_2.png'
+        ];
+
+        const galleryContainer = document.getElementById('skinGallery');
+
+        // Central Index mainly controls the view
+        let activeIndex = 2; // Start with middle image (index 2 out of 5)
+        const labelElement = document.getElementById('gallery-label');
+
+        function updateLabel() {
+            // Logic: Index 0, 1 -> "기능구현"
+            // Others -> "완성본"
+            if (activeIndex <= 1) {
+                labelElement.textContent = "기능구현";
+                labelElement.classList.remove('text-brand-400');
+                labelElement.classList.add('text-white'); // Distinct style if needed
+            } else {
+                labelElement.textContent = "완성본";
+                labelElement.classList.remove('text-white');
+                labelElement.classList.add('text-brand-500'); // Highlight completed
+            }
+        }
+
+        function renderGallery() {
+            // Re-render only classes?
+            // Re-creating DOM elements breaks transition logic if we are not careful.
+            // Better to update classes on existing elements if possible.
+            // But initial code re-created elements. Let's optimize to update classes and transform.
+
+            // Check if gallery is empty
+            if (galleryContainer.children.length === 0) {
+                images.forEach((imgSrc, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'skin-card shadow-lg rounded-xl';
+
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = `Project Image ${index + 1}`;
+                    card.appendChild(img);
+
+                    card.addEventListener('click', () => {
+                        activeIndex = index;
+                        renderGallery();
+                    });
+                    galleryContainer.appendChild(card);
+                });
+            }
+
+            const cards = galleryContainer.children;
+            for (let i = 0; i < cards.length; i++) {
+                if (i === activeIndex) {
+                    cards[i].classList.add('active');
+                } else {
+                    cards[i].classList.remove('active');
+                }
+            }
+
+            updateTrackPosition();
+            updateLabel();
+        }
+
+        function updateTrackPosition() {
+            // Calculate center position
+            // We want the center of the active card to be at the center of the container (wrapper)
+            // wrapper is overflow hidden.
+            // active card is cards[activeIndex]
+
+            // Since sizes are dynamic (vh), we can calculate based on estimated widths or just read them.
+            // However, reading them immediately after class change might not catch the 'active' size transition.
+            // BUT css transition calculates valid layout targets immediately for JS usually.
+
+            // MATH APPROACH (More stable than reading DOM during transition):
+            // Aspect Ratio: 919 / 1173 ~= 0.783
+            // Active Height: 70vh. Width = 70vh * 0.783
+            // Inactive Height: 50vh. Width = 50vh * 0.783
+            // Gap = 16px
+
+            const vh = window.innerHeight;
+            const ratio = 919 / 1173;
+            const activeW = (vh * 0.70) * ratio;
+            const inactiveW = (vh * 0.50) * ratio;
+            const gap = 16;
+
+            let offset = 0;
+
+            // Sum widths before active
+            for (let i = 0; i < activeIndex; i++) {
+                offset += inactiveW + gap;
+            }
+
+            // Add half of active width
+            offset += activeW / 2;
+
+            // Padding-left is 50% of parent width (via CSS padding: 0 50%)?
+            // Wait, if we use padding 50% on container, then 0 scroll is at center start?
+            // Actually, translation logic is simpler:
+            // TranslateX = -1 * (SumWidthsBefore + ActiveWidth/2)
+            // But we need to add ScreenCenter.
+            // If we didn't add padding-left: 50%, we'd do: TranslateX = ScreenWidth/2 - (Pos + W/2).
+
+            // Let's use the ScreenWidth/2 approach and REMOVE padding logic to be safe/simple.
+            // I will update CSS via JS or rely on the previous CSS chunk being correct?
+            // Note: I set padding: 0 50% in CSS chunk. This effectively puts the "start" of the flex line at the vertical center line of the container.
+            // So Item 0 starts at 50%.
+            // Item 0 Center = 50% + W0/2.
+            // If Item 0 is active, we shift left by W0/2.
+            // If Item 1 is active, we shift left by W0 + G + W1/2.
+            // Formula: TranslateX = -1 * ( (WidthsBefore + Gaps) + CurrentWidth/2 )
+
+            const transX = -1 * (offset);
+            galleryContainer.style.transform = `translateX(${transX}px)`;
+        }
+
+        // Initial Render
+        renderGallery();
+        window.addEventListener('resize', updateTrackPosition); // Update on resize
+
+        // Navigation Logic
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.addEventListener('click', () => {
+            activeIndex = (activeIndex - 1 + images.length) % images.length;
+            renderGallery();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            activeIndex = (activeIndex + 1) % images.length;
+            renderGallery();
+        });
+
+    </script>
+</body>
+
+</html>
